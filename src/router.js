@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
+import Applications from './views/Applications.vue'
+import Login from './views/Login.vue'
 import Callback from './components/Callback.vue'
 
 import store from './store'
@@ -16,7 +18,23 @@ const router = new Router({
       name: 'home',
       component: Home,
       meta: {
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/applications',
+      name: 'applications',
+      component: Applications,
+      meta: {
         requiresAuth: true
+      }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login,
+      meta: {
+        requiresAuth: false
       }
     },
     {
@@ -31,15 +49,17 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isAuthed) {
-      next()
-    } else {
-      next({
-        path: '/login',
-        params: { nextUrl: to.fullPath }
-      })
-    }
+  // If the route requires auth and is not logged in, redirect to login
+  if (to.matched.some(record => record.meta.requiresAuth) && !store.getters.isAuthed) {
+    next({
+      path: '/login',
+      params: { nextUrl: to.fullPath }
+    })
+  // If the user is logged in and tries to go to the login, redirect to home
+  } else if (to.matched.some(record => record.name === 'login') && store.getters.isAuthed) {
+    next({
+      path: '/'
+    })
   } else {
     next()
   }

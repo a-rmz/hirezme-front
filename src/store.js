@@ -29,7 +29,7 @@ export default new Vuex.Store({
     },
     setExpiration (state, expiration) {
       const expiresAt = JSON.stringify(expiration * 1000 + new Date().getTime())
-      state.expires_at = expiration
+      state.expires_at = expiresAt
       localStorage.setItem('expires_at', expiresAt)
     },
     setIdToken (state, idToken) {
