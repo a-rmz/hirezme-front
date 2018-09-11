@@ -1,44 +1,17 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link :to="'/'"
-        class="btn btn-link">
-          Home
-      </router-link>
-
-      <b-button
-        :variant="'link'"
-        v-if="!isAuthed"
-        @click="login()">
-          Log In
-      </b-button>
-      <b-button
-        :variant="'link'"
-        v-if="isAuthed"
-        @click="logout()">
-          Log Out
-      </b-button>
-    </div>
+    <nav-bar></nav-bar>
     <router-view/>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import NavBar from '@/components/NavBar';
 
 export default {
-  computed: mapGetters([
-    'isAuthed',
-  ]),
-  methods: {
-    ...mapActions({
-      loginAction: 'login',
-      logoutAction: 'logout',
-    }),
-    login () { this.loginAction() },
-    logout () { this.logoutAction() }
-  }
-  
+  components: {
+    NavBar
+  },
 }
 </script>
 
@@ -49,17 +22,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
 }
 </style>
