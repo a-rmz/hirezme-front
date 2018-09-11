@@ -5,6 +5,7 @@ node_modules
 # local env files
 .env.local
 .env.*.local
+src/auth/auth0-variables.js
 
 # Log files
 npm-debug.log*

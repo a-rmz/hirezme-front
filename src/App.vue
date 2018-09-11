@@ -1,12 +1,46 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link :to="'/'"
+        class="btn btn-link">
+          Home
+      </router-link>
+
+      <b-button
+        :variant="'link'"
+        v-if="!isAuthed"
+        @click="login()">
+          Log In
+      </b-button>
+      <b-button
+        :variant="'link'"
+        v-if="isAuthed"
+        @click="logout()">
+          Log Out
+      </b-button>
     </div>
     <router-view/>
   </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex';
+
+export default {
+  computed: mapGetters([
+    'isAuthed',
+  ]),
+  methods: {
+    ...mapActions({
+      loginAction: 'login',
+      logoutAction: 'logout',
+    }),
+    login () { this.loginAction() },
+    logout () { this.logoutAction() }
+  }
+  
+}
+</script>
 
 <style>
 #app {
