@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-table striped responsive :fields="fields" :items="items">
+    <b-table striped bordered responsive :fields="fields" :items="items">
       <template slot="name" slot-scope="row">
         <b-button :variant="'link'" :href="row.item.url">
           {{ row.item.name }}
