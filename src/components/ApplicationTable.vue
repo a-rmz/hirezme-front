@@ -1,28 +1,46 @@
 <template>
   <div>
-    <b-table striped bordered responsive :fields="fields" :items="items">
-      <template slot="name" slot-scope="row">
-        <b-button :variant="'link'" :href="row.item.url">
-          {{ row.item.name }}
-        </b-button>
-      </template>  
-      <template slot="company" slot-scope="row">
-        <b-button :variant="'link'" :href="row.item.url">
-          {{ row.item.company.name }}
-        </b-button>
-      </template>  
-      <template slot="location" slot-scope="row">{{ Object.values(row.item.company.location).join(', ') }}</template>  
-      <template slot="actions" slot-scope="row">
-        <b-button-group>
-          <b-button :variant="'outline-secondary'">
-            <fa-icon icon="edit"/>
-          </b-button>
-          <b-button :variant="'outline-danger'">
-            <fa-icon icon="trash-alt"/>
-          </b-button>
-        </b-button-group>
-      </template>
-    </b-table>
+    <b-container fluid>
+      <b-row top-row>
+        <b-col md="6" class="table-header">
+          <b-form-group horizontal label="Filter" class="mb-0">
+            <b-input-group>
+              <b-form-input v-model="filter" placeholder="Type to Search" />
+              <b-input-group-append>
+                <b-btn :disabled="!filter" @click="filter = ''">Clear</b-btn>
+              </b-input-group-append>
+            </b-input-group>
+          </b-form-group>
+        </b-col>
+      </b-row>
+      <b-table striped responsive outlined stacked="md"
+        :filter="filter"
+        :fields="fields"
+        :items="items"
+        @row-hovered="hoverRow">
+        <template slot="name" slot-scope="row">
+          <b-link :href="row.item.url">
+            {{ row.item.name }}
+          </b-link>
+        </template>  
+        <template slot="company" slot-scope="row">
+          <b-link :href="row.item.url">
+            {{ row.item.company.name }}
+          </b-link>
+        </template>  
+        <template slot="location" slot-scope="row">{{ Object.values(row.item.company.location).join(', ') }}</template>  
+        <template slot="actions" slot-scope="row" v-if="row.item.actionsVisible">
+          <b-button-group size="sm">
+            <b-button :variant="'link'" size="sm">
+              <fa-icon icon="edit"/>
+            </b-button>
+            <b-button :variant="'link'" size="sm">
+              <fa-icon icon="trash-alt" color="red"/>
+            </b-button>
+          </b-button-group>
+        </template>
+      </b-table>
+    </b-container>
   </div>
 </template>
 
@@ -36,9 +54,11 @@ export default {
         { key: 'name', label: 'Opening name', sortable: true },
         { key: 'status', label: 'Status', sortable: true },
         { key: 'company', label: 'Company', sortable: true },
-        { key: 'location', label: 'Location', sortable: true },
-        { key: 'actions' }
+        { key: 'location', label: 'Location' },
+        { key: 'actions', label: '' }
       ],
+      rowActionsVisible: 0,
+      filter: null,
     }
   },
   computed: {
@@ -51,15 +71,31 @@ export default {
           'Sent' : (application.status === 'REJECTED') ?
             'Rejected' : 'In progress',
         company: application.company,
+        actionsVisible: false,
         _rowVariant: (application.status === 'REJECTED') ? 'danger' : ''
       }))
     },
   },
   methods: {
-    ...mapActions([ 'fetchApplications' ])
+    ...mapActions([ 'fetchApplications' ]),
+    hoverRow (item, index, event) {
+      this.items[this.rowActionsVisible].actionsVisible = false;
+      this.rowActionsVisible = index;
+      item.actionsVisible = true;
+    },
   },
   mounted() {
     this.fetchApplications()
   }
 }
 </script>
+
+<style scoped>
+.table-header {
+  padding: 1em;
+}
+
+td {
+  height: 1.2em;
+}
+</style>
