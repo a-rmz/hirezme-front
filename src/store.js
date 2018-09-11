@@ -16,13 +16,7 @@ export default new Vuex.Store({
     expires_at: localStorage.getItem('expires_at'),
     id_token: localStorage.getItem('id_token'),
     scope: '',
-    user: {
-      id: '',
-      nickname: '',
-      name: '',
-      picture: '',
-      email: ''
-    },
+    user: JSON.parse(localStorage.getItem('user')),
     applications: []
   },
   getters: {
@@ -52,9 +46,12 @@ export default new Vuex.Store({
       state.authenticated = false
       state.accesss_token = null
       state.id_token = null
+      state.applications = []
+      state.user = null
       localStorage.removeItem('access_token')
       localStorage.removeItem('id_token')
       localStorage.removeItem('expires_at')
+      localStorage.removeItem('user')
     },
     setUser (state, user) {
       state.user = {
@@ -64,6 +61,7 @@ export default new Vuex.Store({
         picture: user.picture,
         email: user.picture
       }
+      localStorage.setItem('user', JSON.stringify(user))
     },
     setApplications (state, applications) {
       state.applications = applications
