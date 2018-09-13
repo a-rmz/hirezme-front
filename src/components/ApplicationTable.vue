@@ -14,7 +14,7 @@
         </b-col>
         <b-col md="6" class="table-header">
           <b-button variant="success" style="margin-right:10px;" @click="$emit('create')">Create</b-button>
-          <b-button variant="primary">
+          <b-button variant="primary" @click="$emit('update')">
             <fa-icon icon="sync-alt"/>
           </b-button>
         </b-col> 
@@ -84,15 +84,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions([ 'fetchApplications' ]),
     hoverRow (item, index, event) {
       this.items[this.rowActionsVisible].actionsVisible = false;
       this.rowActionsVisible = index;
       item.actionsVisible = true;
     },
-  },
-  mounted() {
-    this.fetchApplications()
   }
 }
 </script>

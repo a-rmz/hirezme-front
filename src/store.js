@@ -21,7 +21,8 @@ export default new Vuex.Store({
     companies: []
   },
   getters: {
-    isAuthed: state => state.authenticated && (new Date().getTime() < state.expires_at)
+    isAuthed: state => state.authenticated && (new Date().getTime() < state.expires_at),
+    applicationCount: state => state.applications.length
   },
   mutations: {
     setAccessToken (state, token) {
@@ -99,6 +100,7 @@ export default new Vuex.Store({
       })
     },
     fetchApplications ({ commit, state }) {
+      console.log('fetchin')
       return axios.get('http://localhost:3000/api/v1/applications', {
         headers: {
           'Authorization': `Bearer ${state.accesss_token}`

@@ -3,7 +3,21 @@
     <h1 style="padding:1em;">Applications</h1>
     <application-table style="margin:30px;"
       v-on:create="showModal"
-      v-on:remove="showRemoveModal"></application-table>
+      v-on:remove="showRemoveModal"
+      v-on:update="updateApplications"></application-table>
+    <b-alert variant="success"
+        dismissible
+        :show="showSuccess"
+        @dismissed="showSuccess=false;successMessage=''">
+      {{ successMessage }}
+    </b-alert>
+    <b-alert variant="danger"
+      dismissible
+      :show="showError"
+      @dismissed="showError=false;errorMessage=''">
+      {{ errorMessage }}
+    </b-alert>
+
     <b-modal ref="createApplicationModal" hide-footer title="New Application">
       <application-form
         v-on:cancel="hideModal"
@@ -18,24 +32,12 @@
       <p>You are about to remove your application for {{ openingName }}.</p>
       <p>Do you want to proceed?</p>
     </b-modal>
-    <b-alert variant="success"
-        dismissible
-        :show="showSuccess"
-        @dismissed="showSuccess=false;successMessage=''">
-      {{ successMessage }}
-    </b-alert>
-    <b-alert variant="danger"
-      dismissible
-      :show="showError"
-      @dismissed="showError=false;errorMessage=''">
-      {{ errorMessage }}
-    </b-alert>
   </div>
 </template>
 
 
 <script>
-import { mapActions, mapState } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import ApplicationTable from '@/components/ApplicationTable';
 import ApplicationForm from '@/components/ApplicationForm';
 
@@ -46,8 +48,11 @@ export default {
   },
   computed: {
     ...mapState([
-      'user'
-    ])
+      'user',
+    ]),
+    ...mapGetters([
+      'applicationCount',
+    ]),
   },
   data() {
     return {
@@ -61,6 +66,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'fetchApplications',
       'submitApplication',
       'removeApplication',
     ]),
@@ -102,6 +108,18 @@ export default {
           this.openingName = ''
           this.applicationId = ''
         })
+    },
+    updateApplications () {
+      this.fetchApplications()
+        .then(() => {
+          this.successMessage = 'Applications updated'
+          this.showSuccess = true
+        })
+    },
+  },
+  mounted() {
+    if (this.applicationCount === 0) {
+      this.fetchApplications()
     }
   },
   name: 'home'
