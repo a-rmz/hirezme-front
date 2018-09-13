@@ -17,7 +17,8 @@ export default new Vuex.Store({
     id_token: localStorage.getItem('id_token'),
     scope: '',
     user: JSON.parse(localStorage.getItem('user')),
-    applications: []
+    applications: [],
+    companies: []
   },
   getters: {
     isAuthed: state => state.authenticated && (new Date().getTime() < state.expires_at)
@@ -54,17 +55,24 @@ export default new Vuex.Store({
       localStorage.removeItem('user')
     },
     setUser (state, user) {
+      const id = user.sub.split('|').slice(-1).join('')
       state.user = {
-        id: user.sub,
+        id,
         nickname: user.nickname,
         name: user.name,
         picture: user.picture,
         email: user.picture
       }
-      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('user', JSON.stringify(state.user))
     },
     setApplications (state, applications) {
       state.applications = applications
+    },
+    addApplication (state, application) {
+      state.applications.push(application)
+    },
+    removeApplication (state, applicationId) {
+      state.applications = state.applications.filter(a => a.id !== applicationId)
     }
   },
   actions: {
@@ -100,6 +108,22 @@ export default new Vuex.Store({
           commit('setApplications', result.data.data)
         })
         .catch(console.error)
+    },
+    submitApplication ({ commit, state }, application) {
+      return axios.post('http://localhost:3000/api/v1/applications', application, {
+        headers: {
+          'Authorization': `Bearer ${state.accesss_token}`
+        }
+      })
+        .then(newApplication => commit('addApplication', newApplication.data))
+    },
+    removeApplication ({ commit, state }, applicationId) {
+      return axios.delete(`http://localhost:3000/api/v1/applications/${applicationId}`, {
+        headers: {
+          'Authorization': `Bearer ${state.accesss_token}`
+        }
+      })
+        .then(() => commit('removeApplication', applicationId))
     }
   }
 })

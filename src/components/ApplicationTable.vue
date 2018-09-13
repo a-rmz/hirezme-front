@@ -12,6 +12,12 @@
             </b-input-group>
           </b-form-group>
         </b-col>
+        <b-col md="6" class="table-header">
+          <b-button variant="success" style="margin-right:10px;" @click="$emit('create')">Create</b-button>
+          <b-button variant="primary">
+            <fa-icon icon="sync-alt"/>
+          </b-button>
+        </b-col> 
       </b-row>
       <b-table striped responsive outlined stacked="md"
         :filter="filter"
@@ -34,7 +40,7 @@
             <b-button :variant="'link'" size="sm">
               <fa-icon icon="edit"/>
             </b-button>
-            <b-button :variant="'link'" size="sm">
+            <b-button :variant="'link'" size="sm" @click="$emit('remove', row.item);rowActionsVisible=0;">
               <fa-icon icon="trash-alt" color="red"/>
             </b-button>
           </b-button-group>
@@ -65,6 +71,7 @@ export default {
     ...mapState([ 'applications' ]),
     items () {
       return this.applications.map(application => ({
+        id: application.id,
         name: application.name,
         url: application.url,
         status: (application.status === 'SENT') ?
