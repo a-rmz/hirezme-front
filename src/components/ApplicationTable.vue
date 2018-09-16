@@ -29,12 +29,11 @@
             {{ row.item.name }}
           </b-link>
         </template>  
-        <template slot="company" slot-scope="row">
-          <b-link :href="row.item.url">
+        <template slot="company" @click.stop="row.toggleDetails" slot-scope="row">
+          <b-link @click.stop="row.toggleDetails">
             {{ row.item.company.name }}
           </b-link>
         </template>  
-        <template slot="location" slot-scope="row">{{ Object.values(row.item.company.location).join(', ') }}</template>  
         <template slot="actions" slot-scope="row" v-if="row.item.actionsVisible">
           <b-button-group size="sm">
             <b-button :variant="'link'" size="sm">
@@ -44,6 +43,34 @@
               <fa-icon icon="trash-alt" color="red"/>
             </b-button>
           </b-button-group>
+        </template>
+        <template slot="row-details" slot-scope="row">
+          <b-card>
+            <b-row class="mb-2">
+              <b-col sm="3" class="text-sm-right"><b>Company name:</b></b-col>
+              <b-col>{{ row.item.company.name }}</b-col>
+            </b-row>
+            <b-row v-if="row.item.company.tags.length > 0" class="mb-2">
+              <b-col sm="3" class="text-sm-right"><b>Tags:</b></b-col>
+              <b-col>
+                <b-button size="sm" variant="info"
+                  style="margin:0 3px 10px 3px;"
+                  disabled
+                  v-for="(tag, index) in row.item.company.tags" :key="index">
+                    {{ tag }}
+                </b-button>
+              </b-col>
+            </b-row>
+            <b-row class="mb-2">
+              <b-col sm="3" class="text-sm-right"><b>Location:</b></b-col>
+              <b-col>{{
+                (row.item.company.location.address ? `${row.item.company.location.address}, ` : '') +
+                (row.item.company.location.city ? `${row.item.company.location.city}, ` : '') +
+                (row.item.company.location.country ? `${row.item.company.location.country}` : '')
+              }}</b-col>
+            </b-row>
+            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
+          </b-card>
         </template>
       </b-table>
     </b-container>
