@@ -22,7 +22,8 @@ export default new Vuex.Store({
   },
   getters: {
     isAuthed: state => state.authenticated && (new Date().getTime() < state.expires_at),
-    applicationCount: state => state.applications.length
+    applicationCount: state => state.applications.length,
+    companyCount: state => state.companies.length
   },
   mutations: {
     setAccessToken (state, token) {
@@ -74,6 +75,15 @@ export default new Vuex.Store({
     },
     removeApplication (state, applicationId) {
       state.applications = state.applications.filter(a => a.id !== applicationId)
+    },
+    setCompanies (state, companies) {
+      state.companies = companies
+    },
+    addCompany (state, company) {
+      state.companies.push(company)
+    },
+    removeCompany (state, companyId) {
+      state.companies = state.companies.filter(a => a.id !== companyId)
     }
   },
   actions: {
@@ -83,7 +93,7 @@ export default new Vuex.Store({
     logout ({ commit }) {
       commit('setLoggedOut')
     },
-    handleAuth ({ commit, state }) {
+    handleAuth ({ commit }) {
       authService.auth0.parseHash((err, authResult) => {
         if (authResult && authResult.accessToken && authResult.idToken) {
           const { accessToken, idToken, expiresIn, scope } = authResult
@@ -100,7 +110,6 @@ export default new Vuex.Store({
       })
     },
     fetchApplications ({ commit, state }) {
-      console.log('fetchin')
       return axios.get('http://localhost:3000/api/v1/applications', {
         headers: {
           'Authorization': `Bearer ${state.accesss_token}`
@@ -126,6 +135,35 @@ export default new Vuex.Store({
         }
       })
         .then(() => commit('removeApplication', applicationId))
+    },
+    fetchCompanies ({ commit, state }) {
+      return axios.get('http://localhost:3000/api/v1/companies', {
+        headers: {
+          'Authorization': `Bearer ${state.accesss_token}`
+        }
+      })
+        .then(result => {
+          commit('setCompanies', result.data.data)
+        })
+        .catch(console.error)
+    },
+    submitCompany ({ commit, state }, company) {
+      return axios.post('http://localhost:3000/api/v1/companies', company, {
+        headers: {
+          'Authorization': `Bearer ${state.accesss_token}`
+        }
+      })
+        .then(newCompany => commit('addCompany', newCompany.data))
+    },
+    initData ({ dispatch, state }) {
+      if (state.isAuthed) {
+        if (state.applicationCount === 0) {
+          dispatch('fetchApplications')
+        }
+        if (state.companyCount === 0) {
+          dispatch('fetchCompanies')
+        }
+      }
     }
   }
 })

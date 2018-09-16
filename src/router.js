@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Applications from './views/Applications.vue'
+import Companies from './views/Companies.vue'
 import Login from './views/Login.vue'
 import Callback from './components/Callback.vue'
 
@@ -25,6 +26,14 @@ const router = new Router({
       path: '/applications',
       name: 'applications',
       component: Applications,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/companies',
+      name: 'companies',
+      component: Companies,
       meta: {
         requiresAuth: true
       }
