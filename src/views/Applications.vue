@@ -117,10 +117,8 @@ export default {
         })
     },
   },
-  mounted() {
-    if (this.applicationCount === 0) {
-      this.fetchApplications()
-    }
+  mounted () {
+    this.initData()
   },
   name: 'home'
 }
