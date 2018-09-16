@@ -6,12 +6,23 @@
 </template>
 
 <script>
-import NavBar from '@/components/NavBar';
+import { mapActions } from 'vuex'
+import NavBar from '@/components/NavBar'
 
 export default {
   components: {
     NavBar
   },
+  methods: {
+    ...mapActions([
+      'initData'
+    ])
+  },
+  mounted () {
+    this.$nextTick(() => {
+      this.initData()
+    })
+  }
 }
 </script>
 
