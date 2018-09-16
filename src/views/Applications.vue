@@ -22,7 +22,7 @@
       <application-form
         v-on:cancel="hideModal"
         v-on:created="sendApplication">
-      </application-form>  
+      </application-form>
     </b-modal>
     <b-modal centered
       ref="removeApplicationModal" title="Are you sure?"
@@ -35,11 +35,10 @@
   </div>
 </template>
 
-
 <script>
-import { mapActions, mapState, mapGetters } from 'vuex';
-import ApplicationTable from '@/components/ApplicationTable';
-import ApplicationForm from '@/components/ApplicationForm';
+import { mapActions, mapState } from 'vuex'
+import ApplicationTable from '@/components/ApplicationTable'
+import ApplicationForm from '@/components/ApplicationForm'
 
 export default {
   components: {
@@ -48,27 +47,25 @@ export default {
   },
   computed: {
     ...mapState([
-      'user',
-    ]),
-    ...mapGetters([
-      'applicationCount',
-    ]),
+      'user'
+    ])
   },
-  data() {
+  data () {
     return {
       showSuccess: false,
       successMessage: '',
       showError: false,
       errorMessage: '',
       openingName: '',
-      applicationId: '',
+      applicationId: ''
     }
   },
   methods: {
     ...mapActions([
+      'initData',
       'fetchApplications',
       'submitApplication',
-      'removeApplication',
+      'removeApplication'
     ]),
     showModal () {
       this.$refs.createApplicationModal.show()
@@ -77,8 +74,8 @@ export default {
       this.$refs.createApplicationModal.hide()
     },
     showErrorMessage (error) {
-      this.errorMessage = error;
-      this.showError = true;
+      this.errorMessage = error
+      this.showError = true
     },
     sendApplication (form) {
       const application = {
@@ -89,15 +86,15 @@ export default {
       }
       this.submitApplication(application)
         .then(newApplication => {
-          this.hideModal();
+          this.hideModal()
           this.successMessage = 'Application created successfully'
-          this.showSuccess = true;
+          this.showSuccess = true
         })
-        .catch(err => this.showErrorMessage(err));
+        .catch(err => this.showErrorMessage(err))
     },
     showRemoveModal (application) {
-      this.openingName = application.name;
-      this.applicationId = application.id;
+      this.openingName = application.name
+      this.applicationId = application.id
       this.$refs.removeApplicationModal.show()
     },
     deleteApplication () {
@@ -115,7 +112,7 @@ export default {
           this.successMessage = 'Applications updated'
           this.showSuccess = true
         })
-    },
+    }
   },
   mounted () {
     this.initData()

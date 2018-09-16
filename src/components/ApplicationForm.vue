@@ -56,17 +56,17 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState } from 'vuex'
 
 export default {
   computed: {
     ...mapState([
-      'companies',
+      'companies'
     ]),
     companyList () {
-      return  [
+      return [
         { text: 'Select One', value: null },
-        ...this.companies.map(c => ({ value: c.id, text: c.name}))
+        ...this.companies.map(c => ({ value: c.id, text: c.name }))
       ]
     }
   },
@@ -84,38 +84,37 @@ export default {
   },
   methods: {
     onSubmit (evt) {
-      evt.preventDefault();
+      evt.preventDefault()
       // In case the input tag was not added to the list,
       // Add it before submitting the form
       if (this.inputTags.length !== 0) {
         this.form.tags.push(this.inputTags)
       }
-      this.$emit('created', this.form);
-      this.onReset();
+      this.$emit('created', this.form)
     },
     onReset (evt) {
-      evt.preventDefault();
+      evt.preventDefault()
       /* Reset our form values */
-      this.form.name = '';
-      this.form.url = '';
-      this.form.company= null;
-      this.form.tags = [];
-      this.inputTag = '';
+      this.form.name = ''
+      this.form.url = ''
+      this.form.company = null
+      this.form.tags = []
+      this.inputTag = ''
       /* Trick to reset/clear native browser form validation state */
-      this.show = false;
-      this.$nextTick(() => { this.show = true });
+      this.show = false
+      this.$nextTick(() => { this.show = true })
     },
     checkTags (input) {
       if (input.slice(-1) === ',') {
-        const tag = input.slice(0, -1);
+        const tag = input.slice(0, -1)
         if (this.form.tags.indexOf(tag) === -1 && tag.length > 0) {
-          this.form.tags.push(tag);
+          this.form.tags.push(tag)
         }
         this.inputTags = ''
       }
     },
     removeTag (index) {
-      this.form.tags.splice(index, 1);
+      this.form.tags.splice(index, 1)
     }
   }
 }

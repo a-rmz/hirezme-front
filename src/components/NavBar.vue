@@ -28,12 +28,12 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   computed: {
     ...mapGetters([
-      'isAuthed',
+      'isAuthed'
     ]),
     ...mapState([
       'user'
@@ -42,10 +42,10 @@ export default {
   methods: {
     ...mapActions({
       loginAction: 'login',
-      logoutAction: 'logout',
+      logoutAction: 'logout'
     }),
     login () { this.loginAction() },
-    logout () { 
+    logout () {
       this.logoutAction()
       this.$router.replace('/')
     }

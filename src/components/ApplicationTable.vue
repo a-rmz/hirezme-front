@@ -17,7 +17,7 @@
           <b-button variant="primary" @click="$emit('update')">
             <fa-icon icon="sync-alt"/>
           </b-button>
-        </b-col> 
+        </b-col>
       </b-row>
       <b-table striped responsive outlined stacked="md"
         :filter="filter"
@@ -28,12 +28,12 @@
           <b-link :href="row.item.url">
             {{ row.item.name }}
           </b-link>
-        </template>  
+        </template>
         <template slot="company" @click.stop="row.toggleDetails" slot-scope="row">
           <b-link @click.stop="row.toggleDetails">
             {{ row.item.company.name }}
           </b-link>
-        </template>  
+        </template>
         <template slot="actions" slot-scope="row" v-if="row.item.actionsVisible">
           <b-button-group size="sm">
             <b-button :variant="'link'" size="sm">
@@ -78,20 +78,19 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState } from 'vuex'
 
 export default {
-  data() {
+  data () {
     return {
       fields: [
         { key: 'name', label: 'Opening name', sortable: true },
         { key: 'status', label: 'Status', sortable: true },
         { key: 'company', label: 'Company', sortable: true },
-        { key: 'location', label: 'Location' },
         { key: 'actions', label: '' }
       ],
       rowActionsVisible: 0,
-      filter: null,
+      filter: null
     }
   },
   computed: {
@@ -101,26 +100,26 @@ export default {
         id: application.id,
         name: application.name,
         url: application.url,
-        status: (application.status === 'SENT') ?
-          'Sent' : (application.status === 'REJECTED') ?
-            'Rejected' : 'In progress',
+        status: (application.status === 'SENT')
+          ? 'Sent' : (application.status === 'REJECTED')
+            ? 'Rejected' : 'In progress',
         company: application.company,
         actionsVisible: false,
         _rowVariant: (application.status === 'REJECTED') ? 'danger' : ''
       }))
-    },
+    }
   },
   methods: {
     hoverRow (item, index, event) {
-      this.items[this.rowActionsVisible].actionsVisible = false;
-      this.rowActionsVisible = index;
-      item.actionsVisible = true;
-    },
+      this.items[this.rowActionsVisible].actionsVisible = false
+      this.rowActionsVisible = index
+      item.actionsVisible = true
+    }
   }
 }
 </script>
 
-<style scoped>
+<style>
 .table-header {
   padding: 1em;
 }
